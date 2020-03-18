@@ -14,35 +14,66 @@
 <body>
     <div id="mapid"></div>
     <script>
-    	var mymap = L.map('mapid').setView([-12.951029, -38.398933], 13);
-        
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-            subdomains: 'abcd',
-            maxZoom: 19
-        }).addTo(mymap);
+        window.onload = function(){
+            
+            var mymap = null;
+            
+            createMap(-12.944337, -38.455582, 11);
+            
+            var salvador = new XMLHttpRequest();
+            salvador.open('GET', 'salvador.geojson');
+            salvador.setRequestHeader('Content-Type', 'application/json');
+            salvador.onload = function(){
+                if(salvador.status === 200){
+                    L.geoJSON(JSON.parse(salvador.responseText)).addTo(mymap);
+                }else{
+                    alert('not 200');
+                }
+            }
 
-        var popup = L.popup();
-
-        function onMapClick(e) {
-            popup
+            salvador.send();
+            
+            function onMapClick(e) {
+            
+                var popup = L.popup();
+                createMap(-12.951029, -38.398933, 13)
+                addPolygon();
+            
+                /*popup
                 .setLatLng(e.latlng)
                 .setContent("You clicked the map at " + e.latlng.toString())
-                .openOn(mymap);
+                .openOn(mymap);*/
+            }
+            
+            function createMap(x, y, zoom){
+                
+                if(mymap != null){
+                    mymap.remove();
+                }
+
+                mymap = L.map('mapid').setView([x, y], zoom);
+
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                    subdomains: 'abcd',
+                    maxZoom: 19
+                }).addTo(mymap);
+
+                mymap.on('click', onMapClick);
+            }
+
+            function addPolygon(){
+                L.polygon([
+                    [-12.948018, -38.384728],
+                    [-12.94714, -38.384728],
+                    [-12.944672, -38.385544],
+                    [-12.941619, -38.386445],
+                    [-12.943166, -38.392153],
+                    [-12.945927, -38.391337],
+                    [-12.948854, -38.390865]
+                ]).addTo(mymap); 
+            }
         }
-
-        mymap.on('click', onMapClick);
-
-        L.polygon([
-            [-12.948018, -38.384728],
-            [-12.94714, -38.384728],
-            [-12.944672, -38.385544],
-            [-12.941619, -38.386445],
-            [-12.943166, -38.392153],
-            [-12.945927, -38.391337],
-            [-12.948854, -38.390865]
-        ]).addTo(mymap);
-    
     </script>
 </body>
 </html>
