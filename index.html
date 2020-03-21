@@ -10,6 +10,7 @@
         integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
         crossorigin="">
     </script>
+    <script src="https://rawgit.com/hayeswise/Leaflet.PointInPolygon/master/wise-leaflet-pip.js"></script>
 </head>
 <body>
     <div id="mapid"></div>
@@ -17,9 +18,12 @@
         window.onload = function(){
             
             var mymap = null;
+            var polygon = null;
+            //createMap(-12.944337, -38.455582, 11);
             
-            createMap(-12.944337, -38.455582, 11);
-            
+            createMap(-12.951029, -38.398933, 13)
+            addPolygon();
+
             var salvador = new XMLHttpRequest();
             salvador.open('GET', 'salvador.geojson');
             salvador.setRequestHeader('Content-Type', 'application/json');
@@ -33,18 +37,25 @@
 
             salvador.send();
             
+            /*
             function onMapClick(e) {
             
                 var popup = L.popup();
                 createMap(-12.951029, -38.398933, 13)
                 addPolygon();
-            
+                
+
                 /*popup
                 .setLatLng(e.latlng)
                 .setContent("You clicked the map at " + e.latlng.toString())
-                .openOn(mymap);*/
+                .openOn(mymap);
             }
+            */
             
+            function onMapClick(e){
+                alert(polygon.contains(e.latlng));  
+            }
+
             function createMap(x, y, zoom){
                 
                 if(mymap != null){
@@ -63,7 +74,7 @@
             }
 
             function addPolygon(){
-                L.polygon([
+                polygon = L.polygon([
                     [-12.948018, -38.384728],
                     [-12.94714, -38.384728],
                     [-12.944672, -38.385544],
